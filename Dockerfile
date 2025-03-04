@@ -18,15 +18,10 @@ RUN pip install gunicorn
 # Копирование кода приложения
 COPY . .
 
-# Создание необходимых директорий
-RUN mkdir -p /app/media
-RUN mkdir -p /app/static
-
-# Установка прав
-RUN chown -R www-data:www-data /app
-
-# Переключение на непривилегированного пользователя
-USER www-data
+# Создание необходимых директорий и настройка прав
+RUN mkdir -p /app/media /app/static
+RUN chown -R root:root /app
+RUN chmod -R 755 /app/static /app/media
 
 # Порт
 EXPOSE 8000 
