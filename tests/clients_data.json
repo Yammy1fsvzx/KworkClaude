@@ -1,0 +1,171 @@
+{
+  "company": "Инновации Плюс",
+  "clientsData": {
+    "lastUpdated": "2024-03-01",
+    "totalClients": 1250,
+    "activeSubscriptions": 1120,
+    "clients": [
+      {
+        "id": "CLT-001",
+        "name": "ООО 'ТехноПрогресс'",
+        "industry": "Производство",
+        "size": "Крупный бизнес",
+        "joinDate": "2022-06-12",
+        "products": ["PRD-001", "PRD-002", "PRD-004"],
+        "subscriptionStatus": "active",
+        "annualRevenue": 950000,
+        "contacts": {
+          "primary": {
+            "name": "Алексей Смирнов",
+            "position": "ИТ-директор",
+            "email": "a.smirnov@example.com",
+            "phone": "+7 (999) 123-45-67"
+          },
+          "secondary": {
+            "name": "Елена Васильева",
+            "position": "Менеджер проектов",
+            "email": "e.vasilyeva@example.com",
+            "phone": "+7 (999) 765-43-21"
+          }
+        },
+        "feedback": {
+          "lastSurvey": "2024-01-15",
+          "nps": 9,
+          "comments": "Очень довольны продуктами, особенно аналитическим инструментом. Хотелось бы больше интеграций с CRM-системами."
+        }
+      },
+      {
+        "id": "CLT-002",
+        "name": "ЗАО 'МедикалГрупп'",
+        "industry": "Здравоохранение",
+        "size": "Средний бизнес",
+        "joinDate": "2022-08-23",
+        "products": ["PRD-003", "PRD-005"],
+        "subscriptionStatus": "active",
+        "annualRevenue": 720000,
+        "contacts": {
+          "primary": {
+            "name": "Ирина Петрова",
+            "position": "Руководитель отдела информатизации",
+            "email": "i.petrova@example.com",
+            "phone": "+7 (999) 111-22-33"
+          }
+        },
+        "feedback": {
+          "lastSurvey": "2023-12-10",
+          "nps": 8,
+          "comments": "Система управления документами отлично подходит для медицинской документации. Есть пожелания по добавлению специфичных для отрасли шаблонов."
+        }
+      },
+      {
+        "id": "CLT-003",
+        "name": "ИП Ковалев А.Н.",
+        "industry": "Консалтинг",
+        "size": "Малый бизнес",
+        "joinDate": "2023-02-05",
+        "products": ["PRD-001"],
+        "subscriptionStatus": "active",
+        "annualRevenue": 85000,
+        "contacts": {
+          "primary": {
+            "name": "Андрей Ковалев",
+            "position": "Владелец",
+            "email": "a.kovalev@example.com",
+            "phone": "+7 (999) 444-55-66"
+          }
+        },
+        "feedback": {
+          "lastSurvey": "2024-02-20",
+          "nps": 10,
+          "comments": "Базовая версия полностью покрывает мои потребности. Отличное соотношение цена/качество."
+        }
+      },
+      {
+        "id": "CLT-004",
+        "name": "АО 'СтройХолдинг'",
+        "industry": "Строительство",
+        "size": "Крупный бизнес",
+        "joinDate": "2023-04-18",
+        "products": ["PRD-003", "PRD-004", "PRD-005"],
+        "subscriptionStatus": "active",
+        "annualRevenue": 1250000,
+        "contacts": {
+          "primary": {
+            "name": "Сергей Николаев",
+            "position": "Заместитель генерального директора",
+            "email": "s.nikolaev@example.com",
+            "phone": "+7 (999) 777-88-99"
+          },
+          "secondary": {
+            "name": "Дмитрий Иванов",
+            "position": "Руководитель ИТ-отдела",
+            "email": "d.ivanov@example.com",
+            "phone": "+7 (999) 555-66-77"
+          }
+        },
+        "feedback": {
+          "lastSurvey": "2024-01-30",
+          "nps": 9,
+          "comments": "Корпоративное решение удобно и функционально. Особенно ценим возможности кастомизации и интеграции с нашими внутренними системами."
+        }
+      },
+      {
+        "id": "CLT-005",
+        "name": "ООО 'ФинИнвест'",
+        "industry": "Финансы",
+        "size": "Средний бизнес",
+        "joinDate": "2023-05-20",
+        "products": ["PRD-002", "PRD-004"],
+        "subscriptionStatus": "inactive",
+        "annualRevenue": 540000,
+        "contacts": {
+          "primary": {
+            "name": "Марина Соколова",
+            "position": "Финансовый директор",
+            "email": "m.sokolova@example.com",
+            "phone": "+7 (999) 333-22-11"
+          }
+        },
+        "feedback": {
+          "lastSurvey": "2023-11-15",
+          "nps": 6,
+          "comments": "Хорошие продукты, но не хватает специфичных для финансовой отрасли функций. Рассматриваем возможность перехода на другое решение."
+        }
+      }
+    ]
+  },
+  "industryDistribution": {
+    "Производство": "28%",
+    "Финансы": "15%",
+    "Здравоохранение": "12%",
+    "ИТ": "18%",
+    "Строительство": "10%",
+    "Розничная торговля": "8%",
+    "Консалтинг": "5%",
+    "Другое": "4%"
+  },
+  "clientGrowth": {
+    "2022": {
+      "Q1": 0,
+      "Q2": 125,
+      "Q3": 210,
+      "Q4": 280,
+      "total": 615
+    },
+    "2023": {
+      "Q1": 150,
+      "Q2": 185,
+      "Q3": 160,
+      "Q4": 140,
+      "total": 635
+    }
+  },
+  "retentionRate": {
+    "overall": "89.6%",
+    "bySize": {
+      "Малый бизнес": "84.2%",
+      "Средний бизнес": "91.5%",
+      "Крупный бизнес": "96.8%"
+    }
+  }
+} 

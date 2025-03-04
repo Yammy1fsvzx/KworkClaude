@@ -1,0 +1,101 @@
+{% extends 'agent/base.html' %}
+
+{% block title %}Claude Agent - Результаты анализа{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header {% if analysis.status == 'completed' %}bg-success{% elif analysis.status == 'failed' %}bg-danger{% else %}bg-warning{% endif %} text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        Анализ #{{ analysis.id|truncatechars:8 }}
+                        
+                        {% if analysis.status == 'completed' %}
+                        <span class="badge bg-light text-dark ms-2">Завершен</span>
+                        {% elif analysis.status == 'processing' %}
+                        <span class="badge bg-light text-dark ms-2">Обработка</span>
+                        {% elif analysis.status == 'pending' %}
+                        <span class="badge bg-light text-dark ms-2">Ожидание</span>
+                        {% else %}
+                        <span class="badge bg-light text-dark ms-2">Ошибка</span>
+                        {% endif %}
+                    </h5>
+                    
+                    <div>
+                        {% if analysis.status == 'failed' %}
+                        <form method="post" action="{% url 'retry' analysis.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-light">
+                                <i class="bi bi-arrow-repeat"></i> Повторить
+                            </button>
+                        </form>
+                        {% endif %}
+                        <a href="{% url 'analysis_create' %}" class="btn btn-sm btn-light">
+                            <i class="bi bi-plus-lg"></i> Новый анализ
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Создан:</strong> {{ analysis.created_at|date:"d.m.Y H:i" }}</p>
+                        {% if analysis.completed_at %}
+                        <p><strong>Завершен:</strong> {{ analysis.completed_at|date:"d.m.Y H:i" }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Документы для анализа:</strong></p>
+                        <ul>
+                            {% for doc in documents %}
+                            <li>
+                                <strong>{{ doc.name }}</strong> 
+                                <span class="badge bg-secondary">{{ doc.file_type }}</span>
+                                <a href="{{ doc.file.url }}" target="_blank" class="text-decoration-none ms-1">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="border-top pt-3">
+                    <h5>Результаты анализа:</h5>
+                    
+                    {% if analysis.status == 'processing' or analysis.status == 'pending' %}
+                    <div class="text-center my-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Загрузка...</span>
+                        </div>
+                        <p class="mt-3">Анализ в процессе. Пожалуйста, подождите...</p>
+                        <p>Обновите страницу через несколько секунд.</p>
+                    </div>
+                    {% elif analysis.status == 'failed' %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> 
+                        {{ analysis.result }}
+                    </div>
+                    {% else %}
+                    <div class="markdown-content bg-light p-4 rounded">
+                        {{ analysis.result }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if analysis.status == 'processing' or analysis.status == 'pending' %}
+<script>
+    // Автоматическое обновление страницы при обработке
+    setTimeout(function() {
+        location.reload();
+    }, 5000); // Обновление каждые 5 секунд
+</script>
+{% endif %}
+{% endblock %} 

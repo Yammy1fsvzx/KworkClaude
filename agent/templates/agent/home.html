@@ -1,0 +1,103 @@
+{% extends 'agent/base.html' %}
+
+{% block title %}Claude Agent - Главная{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Claude Agent</h1>
+                <p class="fs-4">Мощный сервис для сравнительного анализа документов с использованием AI от Anthropic Claude.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'document_upload' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-cloud-upload"></i> Загрузить документ
+                    </a>
+                    <a href="{% url 'analysis_create' %}" class="btn btn-success btn-lg">
+                        <i class="bi bi-bar-chart"></i> Начать анализ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Статистика</h5>
+                <div class="row text-center mt-4">
+                    <div class="col-6">
+                        <h3 class="fw-bold">{{ documents_count }}</h3>
+                        <p>Документов</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="fw-bold">{{ analyses_count }}</h3>
+                        <p>Анализов</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Возможности</h5>
+                <ul class="list-group list-group-flush mt-3">
+                    <li class="list-group-item">
+                        <i class="bi bi-file-earmark-text text-primary me-2"></i> 
+                        Загрузка документов различных форматов
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-graph-up-arrow text-success me-2"></i> 
+                        Сравнительный анализ содержимого
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-robot text-info me-2"></i> 
+                        Обработка с использованием Claude AI
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-code-slash text-danger me-2"></i> 
+                        REST API для интеграции
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if recent_analyses %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Недавние анализы</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for analysis in recent_analyses %}
+                <a href="{% url 'analysis_detail' analysis.id %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">Анализ #{{ analysis.id|truncatechars:8 }}</h6>
+                        <small>{{ analysis.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">
+                        {% if analysis.status == 'completed' %}
+                        <span class="badge bg-success">Завершен</span>
+                        {% elif analysis.status == 'processing' %}
+                        <span class="badge bg-warning text-dark">Обработка</span>
+                        {% elif analysis.status == 'pending' %}
+                        <span class="badge bg-info text-dark">Ожидание</span>
+                        {% else %}
+                        <span class="badge bg-danger">Ошибка</span>
+                        {% endif %}
+                        | Документов: {{ analysis.documents.count }}
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

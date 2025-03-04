@@ -1,0 +1,264 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .dashboard-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        transition: transform 0.2s;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card h2 {
+        margin-top: 0;
+        color: #5b21b6;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dashboard-card h2 i {
+        margin-right: 10px;
+    }
+    
+    .dashboard-card-full {
+        grid-column: span 12;
+    }
+    
+    .dashboard-card-half {
+        grid-column: span 6;
+    }
+    
+    .dashboard-card-third {
+        grid-column: span 4;
+    }
+    
+    .dashboard-stat {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #5b21b6;
+        margin: 10px 0;
+    }
+    
+    .dashboard-subtext {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .stat-list {
+        margin: 15px 0;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .stat-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .stat-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-name {
+        color: #374151;
+    }
+    
+    .stat-value {
+        font-weight: bold;
+        color: #5b21b6;
+    }
+    
+    .document-list, .analysis-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .document-list li, .analysis-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .document-list li:last-child, .analysis-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .document-name, .analysis-name {
+        font-weight: bold;
+        color: #374151;
+    }
+    
+    .document-meta, .analysis-meta {
+        display: block;
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-top: 3px;
+    }
+    
+    .status-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    
+    .status-completed {
+        background-color: #ecfdf5;
+        color: #047857;
+    }
+    
+    .status-failed {
+        background-color: #fef2f2;
+        color: #b91c1c;
+    }
+    
+    .status-pending {
+        background-color: #eff6ff;
+        color: #1e40af;
+    }
+    
+    .status-processing {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    @media (max-width: 1200px) {
+        .dashboard-card-third {
+            grid-column: span 6;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-card-half, .dashboard-card-third {
+            grid-column: span 12;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Общая статистика -->
+    <div class="dashboard-card dashboard-card-third">
+        <h2>Документы</h2>
+        <div class="dashboard-stat">{{ total_documents }}</div>
+        <div class="dashboard-subtext">Всего документов в системе</div>
+        <div class="dashboard-subtext">{{ documents_last_week }} новых за последние 7 дней</div>
+    </div>
+    
+    <div class="dashboard-card dashboard-card-third">
+        <h2>Анализы</h2>
+        <div class="dashboard-stat">{{ total_analyses }}</div>
+        <div class="dashboard-subtext">Всего анализов в системе</div>
+        <div class="dashboard-subtext">{{ analyses_last_week }} новых за последние 7 дней</div>
+    </div>
+    
+    <div class="dashboard-card dashboard-card-third">
+        <h2>Статус анализов</h2>
+        <ul class="stat-list">
+            <li>
+                <span class="stat-name">Завершено</span>
+                <span class="stat-value">{{ completed_analyses }}</span>
+            </li>
+            <li>
+                <span class="stat-name">В процессе</span>
+                <span class="stat-value">{{ processing_analyses }}</span>
+            </li>
+            <li>
+                <span class="stat-name">В ожидании</span>
+                <span class="stat-value">{{ pending_analyses }}</span>
+            </li>
+            <li>
+                <span class="stat-name">Не удалось</span>
+                <span class="stat-value">{{ failed_analyses }}</span>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Распределение по типам документов -->
+    <div class="dashboard-card dashboard-card-half">
+        <h2>Типы документов</h2>
+        <ul class="stat-list">
+            {% for doc_type in document_types %}
+            <li>
+                <span class="stat-name">{{ doc_type.file_type|default:"Неизвестный" }}</span>
+                <span class="stat-value">{{ doc_type.count }}</span>
+            </li>
+            {% empty %}
+            <li>
+                <span class="stat-name">Нет данных</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Недавние документы -->
+    <div class="dashboard-card dashboard-card-half">
+        <h2>Недавние документы</h2>
+        <ul class="document-list">
+            {% for doc in recent_documents %}
+            <li>
+                <a href="{% url 'admin:agent_document_change' doc.id %}" class="document-name">{{ doc.name }}</a>
+                <span class="document-meta">{{ doc.file_type }} • Загружен: {{ doc.uploaded_at|date:"d.m.Y H:i" }}</span>
+            </li>
+            {% empty %}
+            <li>Нет документов</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Недавние анализы -->
+    <div class="dashboard-card dashboard-card-full">
+        <h2>Недавние анализы</h2>
+        <ul class="analysis-list">
+            {% for analysis in recent_analyses %}
+            <li>
+                <a href="{% url 'admin:agent_analysis_change' analysis.id %}" class="analysis-name">
+                    Анализ №{{ analysis.id }}
+                    {% if analysis.status == 'completed' %}
+                    <span class="status-tag status-completed">Завершен</span>
+                    {% elif analysis.status == 'failed' %}
+                    <span class="status-tag status-failed">Не удалось</span>
+                    {% elif analysis.status == 'pending' %}
+                    <span class="status-tag status-pending">В ожидании</span>
+                    {% elif analysis.status == 'processing' %}
+                    <span class="status-tag status-processing">В процессе</span>
+                    {% endif %}
+                </a>
+                <span class="analysis-meta">
+                    Создан: {{ analysis.created_at|date:"d.m.Y H:i" }}
+                    {% if analysis.completed_at %}
+                    • Завершен: {{ analysis.completed_at|date:"d.m.Y H:i" }}
+                    {% endif %}
+                </span>
+            </li>
+            {% empty %}
+            <li>Нет анализов</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %} 

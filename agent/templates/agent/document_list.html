@@ -1,0 +1,43 @@
+{% extends 'agent/base.html' %}
+
+{% block title %}Claude Agent - Список документов{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Документы</h1>
+    <a href="{% url 'document_upload' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Загрузить новый
+    </a>
+</div>
+
+{% if documents %}
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for document in documents %}
+    <div class="col">
+        <div class="card document-card">
+            <div class="card-body">
+                <h5 class="card-title text-truncate">{{ document.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ document.file_type }}</h6>
+                <p class="card-text">
+                    <small class="text-muted">Загружен: {{ document.uploaded_at|date:"d.m.Y H:i" }}</small>
+                </p>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ document.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                        <i class="bi bi-download"></i> Скачать
+                    </a>
+                    <a href="{% url 'analysis_create' %}?document={{ document.id }}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-bar-chart"></i> Анализировать
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle-fill me-2"></i> У вас еще нет загруженных документов.
+    <a href="{% url 'document_upload' %}" class="alert-link">Загрузить первый документ</a>.
+</div>
+{% endif %}
+{% endblock %} 

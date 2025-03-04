@@ -1,0 +1,93 @@
+{% extends 'agent/base.html' %}
+
+{% block title %}Claude Agent - Загрузка документа{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Загрузка нового документа</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Название документа</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.name.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.file.id_for_label }}" class="form-label">Файл</label>
+                        {{ form.file }}
+                        {% if form.file.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.file.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Поддерживаемые форматы: PDF, DOCX, TXT, CSV, XLS, XLSX, JSON
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'document_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Назад к списку
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cloud-upload"></i> Загрузить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Поддерживаемые типы файлов</h5>
+            </div>
+            <div class="card-body">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-text text-primary" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-3">Текстовые документы</h5>
+                                <p class="card-text text-muted">TXT, PDF, DOCX</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-spreadsheet text-success" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-3">Таблицы и данные</h5>
+                                <p class="card-text text-muted">CSV, XLS, XLSX</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-code text-danger" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-3">Структурированные данные</h5>
+                                <p class="card-text text-muted">JSON</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

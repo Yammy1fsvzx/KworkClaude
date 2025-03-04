@@ -1,0 +1,134 @@
+{% extends 'agent/base.html' %}
+
+{% block title %}Claude Agent - Новый анализ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Создание нового анализа</h5>
+            </div>
+            <div class="card-body">
+                {% if documents %}
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Выберите документы для сравнения</label>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i> 
+                            Выберите два или более документов для проведения сравнительного анализа.
+                        </div>
+                        
+                        <div class="list-group">
+                            {% for document in documents %}
+                            <label class="list-group-item">
+                                <input class="form-check-input me-2" type="checkbox" name="documents" value="{{ document.id }}">
+                                <div>
+                                    <strong>{{ document.name }}</strong>
+                                    <span class="badge bg-secondary ms-2">{{ document.file_type }}</span>
+                                    <small class="text-muted d-block">
+                                        Загружен: {{ document.uploaded_at|date:"d.m.Y H:i" }}
+                                    </small>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.custom_prompt.id_for_label }}" class="form-label">Пользовательский запрос (опционально)</label>
+                        {{ form.custom_prompt }}
+                        <div class="form-text">
+                            {{ form.custom_prompt.help_text }}
+                        </div>
+                        {% if form.custom_prompt.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.custom_prompt.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'document_upload' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-cloud-upload"></i> Загрузить еще
+                        </a>
+                        <button type="submit" class="btn btn-success" id="analyzeBtn">
+                            <i class="bi bi-graph-up-arrow"></i> Анализировать
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> У вас еще нет загруженных документов.
+                    <a href="{% url 'document_upload' %}" class="alert-link">Загрузите документы</a> перед созданием анализа.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">О сравнительном анализе</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-check-circle-fill text-success me-2"></i> Что включает анализ?</h6>
+                        <ul class="ps-4">
+                            <li>Сводку каждого документа</li>
+                            <li>Ключевые сходства между документами</li>
+                            <li>Важные различия</li>
+                            <li>Инсайты и выводы</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-lightbulb-fill text-warning me-2"></i> Возможности своих запросов</h6>
+                        <ul class="ps-4">
+                            <li>Конкретные вопросы к документам</li>
+                            <li>Специфический анализ данных</li>
+                            <li>Проверка гипотез и фактов</li>
+                            <li>Любые другие задачи для AI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверка выбора хотя бы 2 документов для анализа
+        const checkboxes = document.querySelectorAll('input[name="documents"]');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        
+        function updateButtonState() {
+            let checkedCount = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) checkedCount++;
+            });
+            
+            analyzeBtn.disabled = checkedCount < 2;
+            
+            if (checkedCount < 2) {
+                analyzeBtn.title = "Выберите минимум 2 документа для анализа";
+            } else {
+                analyzeBtn.title = "";
+            }
+        }
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateButtonState);
+        });
+        
+        // Инициализация состояния кнопки
+        updateButtonState();
+    });
+</script>
+{% endblock %} 
